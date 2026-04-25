@@ -1,0 +1,29 @@
+# Local .terraform directories — provider plugins and module cache
+**/.terraform/*
+
+# Terraform state files (remote backend = S3, never commit local copies)
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Crash logs
+crash.log
+crash.*.log
+
+# tfvars may contain secrets — commit only sanitized examples
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+
+# CLI plan output
+*.tfplan
+
+# Override files (local-only convenience overrides)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
