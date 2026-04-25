@@ -9,9 +9,12 @@
 .vscode/
 CLAUDE.md
 skills-lock.json
-
+docs/
+.remember/
+lesson-3/
 # dotenv files
 .env
+.terraform/
 
 # Vagrant runtime state (machine IDs, SSH keys, action logs)
 .vagrant/
