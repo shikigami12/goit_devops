@@ -1,5 +1,5 @@
 image:
-  repository: changeme.dkr.ecr.us-west-2.amazonaws.com/lesson-8-django
+  repository: changeme.dkr.ecr.us-west-2.amazonaws.com/project-django
   tag: "1"
   pullPolicy: IfNotPresent
 

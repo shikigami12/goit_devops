@@ -30,7 +30,7 @@ spec:
 
   environment {
     ECR_REGISTRY = credentials('ecr-registry-url')
-    ECR_REPO     = 'lesson-8-django'
+    ECR_REPO     = 'project-django'
     IMAGE_TAG    = "${BUILD_NUMBER}"
   }
 
@@ -63,8 +63,8 @@ spec:
             sh """
               git config --global user.email "jenkins@ci.local"
               git config --global user.name "Jenkins"
-              sed -i 's/^  tag: .*/  tag: "${IMAGE_TAG}"/' lesson-8/charts/django-app/values.yaml
-              git add lesson-8/charts/django-app/values.yaml
+              sed -i 's/^  tag: .*/  tag: "${IMAGE_TAG}"/' Project/charts/django-app/values.yaml
+              git add Project/charts/django-app/values.yaml
               git commit -m "ci: bump django-app to build ${IMAGE_TAG}"
               git remote set-url origin https://\${GIT_USER}:\${GIT_TOKEN}@github.com/\${GIT_USER}/devops.git
               git push origin HEAD:main

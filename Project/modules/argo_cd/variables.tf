@@ -18,7 +18,7 @@ variable "git_repo_url" {
 variable "git_repo_path" {
   description = "Path within the Git repo containing the django-app Helm chart"
   type        = string
-  default     = "lesson-8/charts/django-app"
+  default     = "Project/charts/django-app"
 }
 
 variable "target_revision" {

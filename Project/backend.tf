@@ -8,10 +8,10 @@
 #
 # terraform {
 #   backend "s3" {
-#     bucket         = "eugenkhudoliiv-tfstate-lesson-8"
-#     key            = "lesson-8/terraform.tfstate"
+#     bucket         = "eugenkhudoliiv-tfstate-project"
+#     key            = "project/terraform.tfstate"
 #     region         = "us-west-2"
-#     dynamodb_table = "terraform-locks-lesson-8"
+#     dynamodb_table = "terraform-locks-project"
 #     encrypt        = true
 #   }
 # }
