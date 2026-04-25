@@ -1,0 +1,7 @@
+# Pre-existing files at repo init — excluded from version control.
+# Coursework artifacts added after this point are tracked normally.
+.agents/
+.claude/
+.vscode/
+CLAUDE.md
+skills-lock.json
