@@ -57,6 +57,9 @@ resource "aws_eip" "nat" {
   depends_on = [aws_internet_gateway.main]
 }
 
+# Single NAT gateway (cost optimization). Not HA — if the AZ holding it
+# goes down, private subnets in the other AZs lose egress. Acceptable for
+# this learning project; production would use one NAT per AZ.
 resource "aws_nat_gateway" "main" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public[0].id
