@@ -1,0 +1,31 @@
+.git
+.gitignore
+.dockerignore
+.env
+.env.*
+!.env.example
+
+# Compose / orchestration files don't need to be inside the image.
+docker-compose*.yml
+nginx/
+
+# Python build / runtime artifacts.
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtualenvs.
+.venv/
+venv/
+env/
+
+# Local SQLite (we use Postgres) and IDE noise.
+db.sqlite3
+.vscode/
+.idea/
+
+# Static collected output (built inside container).
+staticfiles/
