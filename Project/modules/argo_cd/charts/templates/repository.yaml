@@ -1,0 +1,15 @@
+{{- range $i, $repo := .Values.repositories }}
+{{- if gt $i 0 }}
+---
+{{- end }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "repo-{{ $i }}"
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  type: {{ $repo.type }}
+  url: {{ $repo.url }}
+{{- end }}

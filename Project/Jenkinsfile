@@ -1,0 +1,77 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:debug
+    command: ["/busybox/cat"]
+    tty: true
+    volumeMounts:
+    - name: ecr-creds
+      mountPath: /kaniko/.docker
+  - name: git
+    image: alpine/git:2.43.0
+    command: ["cat"]
+    tty: true
+  volumes:
+  - name: ecr-creds
+    secret:
+      secretName: ecr-credentials
+      items:
+      - key: .dockerconfigjson
+        path: config.json
+'''
+    }
+  }
+
+  environment {
+    ECR_REGISTRY = credentials('ecr-registry-url')
+    ECR_REPO     = 'project-django'
+    IMAGE_TAG    = "${BUILD_NUMBER}"
+  }
+
+  stages {
+    stage('Checkout') {
+      steps { checkout scm }
+    }
+
+    stage('Build & Push') {
+      steps {
+        container('kaniko') {
+          sh '''/kaniko/executor \
+            --context=${WORKSPACE}/lesson-4 \
+            --dockerfile=${WORKSPACE}/lesson-4/Dockerfile \
+            --destination=${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG} \
+            --destination=${ECR_REGISTRY}/${ECR_REPO}:latest \
+            --cache=true'''
+        }
+      }
+    }
+
+    stage('Update Helm Tag') {
+      steps {
+        container('git') {
+          withCredentials([usernamePassword(
+            credentialsId: 'github-credentials',
+            usernameVariable: 'GIT_USER',
+            passwordVariable: 'GIT_TOKEN'
+          )]) {
+            sh """
+              git config --global user.email "jenkins@ci.local"
+              git config --global user.name "Jenkins"
+              sed -i 's/^  tag: .*/  tag: "${IMAGE_TAG}"/' Project/charts/django-app/values.yaml
+              git add Project/charts/django-app/values.yaml
+              git commit -m "ci: bump django-app to build ${IMAGE_TAG}"
+              git remote set-url origin https://\${GIT_USER}:\${GIT_TOKEN}@github.com/\${GIT_USER}/devops.git
+              git push origin HEAD:main
+            """
+          }
+        }
+      }
+    }
+  }
+}
