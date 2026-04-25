@@ -138,6 +138,31 @@ variable "target_revision" {
   default     = "main"
 }
 
+variable "use_aurora" {
+  description = "Use Aurora cluster (true) or plain RDS instance (false)"
+  type        = bool
+  default     = false
+}
+
+variable "db_name" {
+  description = "Database name"
+  type        = string
+  default     = "devops"
+}
+
+variable "db_username" {
+  description = "Database master username"
+  type        = string
+  default     = "devops"
+}
+
+variable "db_password" {
+  description = "Database master password"
+  type        = string
+  sensitive   = true
+  default     = "changeme_db"
+}
+
 module "s3_backend" {
   source      = "./modules/s3-backend"
   bucket_name = var.state_bucket_name
@@ -178,4 +203,19 @@ module "argo_cd" {
   git_repo_path   = var.git_repo_path
   target_revision = var.target_revision
   depends_on      = [module.eks]
+}
+
+module "rds" {
+  source = "./modules/rds"
+
+  identifier     = "project-db"
+  use_aurora     = var.use_aurora
+  vpc_id         = module.vpc.vpc_id
+  subnet_ids     = module.vpc.private_subnet_ids
+  vpc_cidr_block = var.vpc_cidr_block
+  db_name        = var.db_name
+  db_username    = var.db_username
+  db_password    = var.db_password
+
+  depends_on = [module.vpc]
 }

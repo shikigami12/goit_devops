@@ -57,3 +57,13 @@ output "argocd_initial_password_command" {
   description = "Command to get initial Argo CD admin password"
   value       = module.argo_cd.argocd_initial_password_command
 }
+
+output "db_endpoint" {
+  description = "Database connection endpoint"
+  value       = module.rds.endpoint
+}
+
+output "db_port" {
+  description = "Database port"
+  value       = module.rds.port
+}
