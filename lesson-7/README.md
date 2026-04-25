@@ -25,7 +25,7 @@ ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
 ECR_URL=$(terraform output -raw ecr_repository_url)
 aws ecr get-login-password --region us-west-2 \
   | docker login --username AWS --password-stdin "${ACCOUNT}.dkr.ecr.us-west-2.amazonaws.com"
-docker build -t lesson-7-django:v1 ../lesson-4
+docker build --platform=linux/amd64 -t lesson-7-django:v1 ../lesson-4
 docker tag lesson-7-django:v1 "${ECR_URL}:v1"
 docker push "${ECR_URL}:v1"
 
