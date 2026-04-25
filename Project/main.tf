@@ -23,7 +23,7 @@ provider "aws" {
   default_tags {
     tags = {
       Project   = "devops-coursework"
-      Lesson    = "lesson-8"
+      Lesson    = "Project"
       ManagedBy = "Terraform"
     }
   }
@@ -68,13 +68,13 @@ variable "availability_zones" {
 variable "state_bucket_name" {
   description = "Globally unique S3 bucket name for Terraform remote state"
   type        = string
-  default     = "eugenkhudoliiv-tfstate-lesson-8"
+  default     = "eugenkhudoliiv-tfstate-project"
 }
 
 variable "lock_table_name" {
   description = "DynamoDB table name for Terraform state locking"
   type        = string
-  default     = "terraform-locks-lesson-8"
+  default     = "terraform-locks-project"
 }
 
 variable "vpc_cidr_block" {
@@ -98,19 +98,19 @@ variable "private_subnet_cidrs" {
 variable "vpc_name" {
   description = "Name tag for the VPC"
   type        = string
-  default     = "lesson-8-vpc"
+  default     = "project-vpc"
 }
 
 variable "ecr_repository_name" {
   description = "Name of the ECR repository"
   type        = string
-  default     = "lesson-8-django"
+  default     = "project-django"
 }
 
 variable "cluster_name" {
   description = "Name of the EKS cluster"
   type        = string
-  default     = "lesson-8-eks"
+  default     = "project-eks"
 }
 
 variable "jenkins_admin_password" {
@@ -129,7 +129,7 @@ variable "git_repo_url" {
 variable "git_repo_path" {
   description = "Path within the git repo to the django-app Helm chart"
   type        = string
-  default     = "lesson-8/charts/django-app"
+  default     = "Project/charts/django-app"
 }
 
 variable "target_revision" {

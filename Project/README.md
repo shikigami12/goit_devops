@@ -9,7 +9,7 @@ Git push
    │
    ▼
 Jenkins Pipeline (Kubernetes Agent)
-   ├─ kaniko: build & push → ECR (lesson-8-django:BUILD_NUMBER)
+   ├─ kaniko: build & push → ECR (project-django:BUILD_NUMBER)
    └─ git:    sed values.yaml → commit → push to main
                                               │
                                               ▼
@@ -29,7 +29,7 @@ Jenkins Pipeline (Kubernetes Agent)
 ```bash
 # 1. First apply — creates state bucket, VPC, ECR, EKS cluster.
 #    backend.tf must stay commented for this step.
-cd lesson-8
+cd Project
 terraform init
 terraform apply -target=module.s3_backend -target=module.vpc -target=module.ecr -target=module.eks
 
@@ -37,7 +37,7 @@ terraform apply -target=module.s3_backend -target=module.vpc -target=module.ecr 
 terraform init -migrate-state
 
 # 3. Configure kubectl.
-aws eks update-kubeconfig --name lesson-8-eks --region us-west-2
+aws eks update-kubeconfig --name project-eks --region us-west-2
 kubectl get nodes
 
 # 4. Apply Jenkins + Argo CD.
@@ -72,12 +72,12 @@ terraform output argocd_initial_password_command | bash
 ## Argo CD setup
 
 After `terraform apply`, Argo CD Application `django-app` is created automatically.
-It watches `lesson-8/charts/django-app` on `main` and auto-syncs on every push.
+It watches `Project/charts/django-app` on `main` and auto-syncs on every push.
 
 ## Layout
 
 ```
-lesson-8/
+Project/
 ├── main.tf, backend.tf, outputs.tf
 ├── Jenkinsfile
 ├── modules/

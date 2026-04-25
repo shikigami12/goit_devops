@@ -3,7 +3,7 @@ applications:
     project: default
     repoURL: https://github.com/REPLACE_OWNER/REPLACE_REPO.git
     targetRevision: main
-    path: lesson-8/charts/django-app
+    path: Project/charts/django-app
     destinationServer: https://kubernetes.default.svc
     destinationNamespace: django
 
