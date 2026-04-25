@@ -1,0 +1,29 @@
+image:
+  repository: changeme.dkr.ecr.us-west-2.amazonaws.com/lesson-8-django
+  tag: "1"
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8000
+
+config:
+  DJANGO_DEBUG: "1"
+  DJANGO_SECRET_KEY: "django-insecure-dev-only-please-change-me"
+  DJANGO_ALLOWED_HOSTS: "*"
+  POSTGRES_DB: "devops"
+  POSTGRES_USER: "devops"
+  POSTGRES_PASSWORD: "devops"
+  POSTGRES_HOST: "postgres"
+  POSTGRES_PORT: "5432"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
