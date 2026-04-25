@@ -4,7 +4,7 @@ Full CI/CD pipeline: Jenkins builds the Django Docker image with Kaniko, pushes 
 
 ## CI/CD Flow
 
-```
+```text
 Git push
    │
    ▼
@@ -59,6 +59,7 @@ terraform output argocd_initial_password_command | bash
    - `ecr-registry-url` — String credential: `<ACCOUNT_ID>.dkr.ecr.us-west-2.amazonaws.com`
    - `github-credentials` — Username + Password: GitHub username + personal access token (needs `repo` scope)
 4. Create the ECR auth secret in the jenkins namespace:
+
    ```bash
    TOKEN=$(aws ecr get-login-password --region us-west-2)
    kubectl create secret docker-registry ecr-credentials \
@@ -67,6 +68,7 @@ terraform output argocd_initial_password_command | bash
      --docker-password="${TOKEN}" \
      -n jenkins
    ```
+
 5. Update `git_repo_url` in `main.tf` to your actual repo URL and `terraform apply`.
 
 ## Argo CD setup
@@ -76,7 +78,7 @@ It watches `Project/charts/django-app` on `main` and auto-syncs on every push.
 
 ## Layout
 
-```
+```text
 Project/
 ├── main.tf, backend.tf, outputs.tf
 ├── Jenkinsfile
@@ -140,6 +142,69 @@ module "rds" {
 - **Change engine version:** update `engine_version` / `aurora_engine_version` and the matching `*_parameter_group_family` (e.g. `postgres16`, `aurora-postgresql16`)
 - **Change instance class:** set `instance_class` (e.g. `db.t3.small`, `db.r6g.large` for Aurora)
 - **Multi-AZ for plain RDS:** set `multi_az = true`
+
+## Monitoring (Prometheus + Grafana)
+
+Deployed via `modules/monitoring` using the `kube-prometheus-stack` Helm chart into the `monitoring` namespace. Includes Prometheus, Grafana, AlertManager, and Node Exporter.
+
+```bash
+# Verify all monitoring pods are running
+kubectl get all -n monitoring
+
+# Access Grafana (admin / admin by default)
+kubectl port-forward svc/kube-prometheus-stack-grafana 3000:80 -n monitoring
+# Open http://localhost:3000
+
+# Access Prometheus
+kubectl port-forward svc/kube-prometheus-stack-prometheus 9090:9090 -n monitoring
+# Open http://localhost:9090
+
+# Or use terraform outputs
+terraform output grafana_portforward_command | bash
+```
+
+Grafana comes pre-loaded with dashboards for Kubernetes cluster metrics, node metrics, and pod CPU/memory. The HPA on `django-app` (2–6 replicas at 70% CPU) is visible in the workload dashboards.
+
+## Django Application
+
+The Django app lives in `Django/` and is built by the Jenkins pipeline.
+
+```bash
+# Local development
+cd Django
+docker compose up
+
+# App is available at http://localhost (via nginx proxy)
+# API health check: GET / → JSON with db reachability status
+```
+
+## Deploy checklist
+
+```bash
+# 1. Bootstrap state backend + VPC + ECR + EKS first
+terraform init
+terraform apply -target=module.s3_backend -target=module.vpc -target=module.ecr -target=module.eks
+
+# 2. Migrate state
+terraform init -migrate-state
+
+# 3. Apply everything else (Jenkins, Argo CD, RDS, monitoring)
+terraform apply
+
+# 4. Verify namespaces
+kubectl get all -n jenkins
+kubectl get all -n argocd
+kubectl get all -n monitoring
+
+# 5. Jenkins port-forward
+kubectl port-forward svc/jenkins 8080:8080 -n jenkins
+
+# 6. Argo CD port-forward
+kubectl port-forward svc/argocd-server 8081:443 -n argocd
+
+# 7. Grafana port-forward
+kubectl port-forward svc/kube-prometheus-stack-grafana 3000:80 -n monitoring
+```
 
 ## Cleanup
 

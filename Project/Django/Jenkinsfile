@@ -43,8 +43,8 @@ spec:
       steps {
         container('kaniko') {
           sh '''/kaniko/executor \
-            --context=${WORKSPACE}/lesson-4 \
-            --dockerfile=${WORKSPACE}/lesson-4/Dockerfile \
+            --context=${WORKSPACE}/Django \
+            --dockerfile=${WORKSPACE}/Django/Dockerfile \
             --destination=${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG} \
             --destination=${ECR_REGISTRY}/${ECR_REPO}:latest \
             --cache=true'''

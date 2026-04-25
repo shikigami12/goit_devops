@@ -123,7 +123,7 @@ variable "jenkins_admin_password" {
 variable "git_repo_url" {
   description = "Git repository URL that Argo CD watches"
   type        = string
-  default     = "https://github.com/REPLACE_ME/devops.git"
+  default     = "https://github.com/shikigami12/goit_devops.git"
 }
 
 variable "git_repo_path" {
@@ -218,4 +218,9 @@ module "rds" {
   db_password    = var.db_password
 
   depends_on = [module.vpc]
+}
+
+module "monitoring" {
+  source     = "./modules/monitoring"
+  depends_on = [module.eks]
 }

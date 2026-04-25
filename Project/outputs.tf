@@ -67,3 +67,13 @@ output "db_port" {
   description = "Database port"
   value       = module.rds.port
 }
+
+output "grafana_portforward_command" {
+  description = "Command to access Grafana on localhost:3000"
+  value       = module.monitoring.grafana_portforward_command
+}
+
+output "prometheus_portforward_command" {
+  description = "Command to access Prometheus on localhost:9090"
+  value       = module.monitoring.prometheus_portforward_command
+}
