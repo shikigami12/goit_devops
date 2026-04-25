@@ -1,0 +1,29 @@
+{{- range $i, $app := .Values.applications }}
+{{- if gt $i 0 }}
+---
+{{- end }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $app.name }}
+  namespace: {{ $.Release.Namespace }}
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ $app.project }}
+  source:
+    repoURL: {{ $app.repoURL }}
+    targetRevision: {{ $app.targetRevision }}
+    path: {{ $app.path }}
+    helm:
+      releaseName: {{ $app.name }}
+  destination:
+    server: {{ $app.destinationServer }}
+    namespace: {{ $app.destinationNamespace }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+{{- end }}

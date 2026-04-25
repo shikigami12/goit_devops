@@ -1,0 +1,5 @@
+apiVersion: v2
+name: argocd-apps
+description: Argo CD Application resources for the django-app
+type: application
+version: 0.1.0
